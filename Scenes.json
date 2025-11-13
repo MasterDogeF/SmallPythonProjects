@@ -1,0 +1,24 @@
+{
+    "intro": {
+        "title": "[underline][bold][white]Chapter 1",
+        "text": [
+            "It's a [bold][yellow]warm[/] summer day",
+            "You wake up from a long nap in the front seat of your dad's car",
+            "You look through the window and see nothing but a dense [bold][green]green forest"
+        ],
+        "speed": 1,
+        "choices" : [
+            { "text": "[on #333333]1. Go back to sleep", "next": "sleep" },
+            { "text": "[on #333333]2. Talk to dad", "next": "dad" }
+        ]
+    },
+    "sleep": {
+        "text": ["You fall asleep"],
+        "speed": 1
+    },
+    "dad": {
+        "text": ["You: hey dad"],
+        "speed": 1
+    }
+}
+
