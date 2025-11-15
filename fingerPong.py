@@ -13,9 +13,6 @@ mpHands = mp.solutions.hands
 hands = mpHands.Hands()
 mpDraw = mp.solutions.drawing_utils
 
-maxTargets = 10
-targets = []
-
 ball_pos = [wCam/2, hCam/2]
 ball_radius = 30
 gravity = 0.5
@@ -140,7 +137,7 @@ while True:
                         collided = True
                         break
 
-                mpDraw.draw_landmarks(frame, handLms)
+                mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
 
         if collided:
             break
