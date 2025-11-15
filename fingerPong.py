@@ -17,8 +17,8 @@ maxTargets = 10
 targets = []
 
 ball_pos = [wCam/2, hCam/2]
-ball_radius = 25
-gravity = 0.15
+ball_radius = 30
+gravity = 0.5
 ball_vel = [5,0]
 fingerVelocities = [None,None]*4
 fingerOldPositions = [None,None]*4
@@ -71,8 +71,8 @@ def ball_collision(ball_pos, ball_vel, radius, p1, p2, handID):
     ny = dy / dist
 
     #only bounce if ball is moving towards the paddle
-    if vx * nx + vy * ny >= 0:
-        return ball_pos, ball_vel, False
+    #if vx * nx + vy * ny >= 0:
+        #return ball_pos, ball_vel, False
 
     # Reflect velocity across normal
     dot = vx * nx + vy * ny
@@ -80,8 +80,8 @@ def ball_collision(ball_pos, ball_vel, radius, p1, p2, handID):
     rvy = vy - 2 * dot * ny * 1.1
 
     # Push the ball out to the surface so it doesn't get stuck
-    bx = cx + nx * radius
-    by = cy + ny * radius
+    bx = cx + nx * radius 
+    by = cy + ny * radius 
 
     return [bx, by], [rvx, rvy], True
 
@@ -97,37 +97,53 @@ while True:
 
     ball_vel[1] += gravity   
 
-    ball_pos[0] += ball_vel[0]
-    ball_pos[1] += ball_vel[1]
+    old_pos = ball_pos.copy()
+    dx, dy = ball_vel
 
-    if ball_pos[0] > wCam or ball_pos[0] < 0 or ball_pos[1] > hCam+300 or ball_pos[1] < 0:
-        cv2.putText(frame, 'you lost!', (int(wCam/2), int(hCam/2)), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 15, cv2.LINE_AA)
-    
-    if results.multi_hand_landmarks:
-        for handID, handLms in enumerate(results.multi_hand_landmarks):
-            for id, lm in enumerate(handLms.landmark):
-                h,w,c = frame.shape
-                cx, cy = int(lm.x * w), int(lm.y * h)
+    dist = math.hypot(dx,dy)
+    max_step = 10.0
+    steps = max(1, int(dist / max_step))
+    print(steps)
 
-                if id == 4:
-                    cv2.circle(frame, (cx,cy), 10, (255,255,255), cv2.FILLED)
-                    bases[handID] = (cx,cy)
-                if id == 8:
-                    cv2.circle(frame, (cx,cy), 10, (255,255,255), cv2.FILLED)
-                    fingers[handID] = (cx,cy)
-                    if fingerOldPositions[handID] is None:
-                        fingerOldPositions[handID] = fingers[handID]
+    collided = False
+    for i in range(steps):
+        ball_pos[0] = old_pos[0] + dx * (i+1) / steps
+        ball_pos[1] = old_pos[1] + dy * (i+1) / steps
 
-            if fingers[handID] != None and bases[handID] is not None:
-                lines[handID] = [bases[handID], fingers[handID]]
-                cv2.line(frame, bases[handID], fingers[handID], (255,100,0), 15)
-            
-            if fingers[handID] is not None and bases[handID] is not None:
-                ball_pos, ball_vel, hit = ball_collision(ball_pos, ball_vel, ball_radius, lines[handID][0], lines[handID][1], handID)
-                if hit:
-                    score += 1
+        if ball_pos[0] > wCam or ball_pos[0] < 0 or ball_pos[1] > hCam+300 or ball_pos[1] < 0:
+            cv2.putText(frame, 'you lost!', (int(wCam/2), int(hCam/2)), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 15, cv2.LINE_AA)
+            break
+        
+        if results.multi_hand_landmarks:
+            for handID, handLms in enumerate(results.multi_hand_landmarks):
+                for id, lm in enumerate(handLms.landmark):
+                    h,w,c = frame.shape
+                    cx, cy = int(lm.x * w), int(lm.y * h)
 
-            mpDraw.draw_landmarks(frame, handLms)
+                    if id == 4:
+                        cv2.circle(frame, (cx,cy), 10, (255,255,255), cv2.FILLED)
+                        bases[handID] = (cx,cy)
+                    if id == 8:
+                        cv2.circle(frame, (cx,cy), 10, (255,255,255), cv2.FILLED)
+                        fingers[handID] = (cx,cy)
+                        if fingerOldPositions[handID] is None:
+                            fingerOldPositions[handID] = fingers[handID]
+
+                if fingers[handID] != None and bases[handID] is not None:
+                    lines[handID] = [bases[handID], fingers[handID]]
+                    cv2.line(frame, bases[handID], fingers[handID], (255,100,0), 15)
+                
+                if fingers[handID] is not None and bases[handID] is not None:
+                    ball_pos, ball_vel, hit = ball_collision(ball_pos, ball_vel, ball_radius, lines[handID][0], lines[handID][1], handID)
+                    if hit:
+                        score += 1
+                        collided = True
+                        break
+
+                mpDraw.draw_landmarks(frame, handLms)
+
+        if collided:
+            break
 
     if frames >= framesToSpeedCheck:
         for i in range(len(fingers)):
