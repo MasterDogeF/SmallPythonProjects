@@ -1,4 +1,3 @@
-import pygame
 import math
 import random
 from rich.console import Console
@@ -6,14 +5,12 @@ from enum import Enum
 
 WIDTH = 300
 grid_size = 32
-screen = pygame.display.set_mode((WIDTH,WIDTH))
-screen.fill((255,255,255))
 
 class Node():
     def __init__(self, pos, isObstacle=False):
         self.pos = pos
         self.h = 0
-        self.g = 0
+        self.g = math.inf
         self.totalCost = 0
         self.isObstacle = isObstacle
         self.isPath = False
@@ -39,9 +36,10 @@ def create_grid():
         grid.append(column)
 
 def algorithm(start, destination):
-    openList = [start]
-    closedList = []
+    openList = [start] #nodes that are discovered but may still be able to find a cheaper path to them,
+    closedList = [] #final nodes
 
+    start.g = 0
     start.h = heuristic(start.pos, destination.pos)
     start.totalCost = start.g + start.h
     start.parent = None
@@ -62,7 +60,6 @@ def algorithm(start, destination):
         closedList.append(current)
     
         for neighbor in get_neighbors(current.pos):
-            x, y = neighbor.pos
             if neighbor in closedList:
                 continue
 
@@ -71,7 +68,7 @@ def algorithm(start, destination):
             if neighbor not in openList:
                 openList.append(neighbor)
             elif tentative_g >= neighbor.g:
-                continue
+                continue #better path not found
             
             neighbor.parent = current
             neighbor.g = tentative_g
@@ -86,8 +83,8 @@ def make_path(start, destination):
         current = current.parent
 
 def print_grid(start=None, destination=None):
-    for x in range(grid_size):
-        for y in range(grid_size):
+    for y in range(grid_size):
+        for x in range(grid_size):
             text = "[bold][white]███"
             if grid[x][y].isObstacle:
                 text = "[bold][black]███"
@@ -98,7 +95,7 @@ def print_grid(start=None, destination=None):
             if grid[x][y] == destination:
                 text = "[bold][red]███"
 
-            if grid[x][y].pos[1] == grid_size - 1:
+            if x == grid_size - 1:
                 Console().print(text, end="\n")
             else:
                 Console().print(text, end="")
@@ -127,19 +124,21 @@ create_grid()
 print_grid()
 
 print("start node: ")
-startX = int(input("input x: "))
-startY = int(input("input y: "))
+startX = min(max(int(input("input x: ")), 0), grid_size-1)
+startY = min(max(int(input("input y: ")), 0), grid_size-1)
 
 start = grid[startX][startY] 
 print_grid(start)
 
 print("destination node: ")
-destinationX = int(input("input x: "))
-destinationY = int(input("input y: "))
+destinationX = min(max(int(input("input x: ")), 0), grid_size-1)
+destinationY = min(max(int(input("input y: ")), 0), grid_size-1)
 
 destination = grid[destinationX][destinationY]
 
-add_obstacles(300, start, destination)
+obstacles = min(max(int(input("input number of obstacles: ")), 0), (grid_size**2) - 2)
+
+add_obstacles(obstacles, start, destination)
 print_grid(start, destination)
 
 print("")
@@ -148,10 +147,4 @@ print("")
 
 path = algorithm(start, destination)
 print_grid(start, destination)
-
-running = True
-while running:
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      running = False
 
