@@ -15,6 +15,7 @@ class Node():
         self.isObstacle = isObstacle
         self.isPath = False
         self.parent = None
+        self.checked = False
 
 grid = []
 
@@ -67,6 +68,7 @@ def algorithm(start, destination):
 
             if neighbor not in openList:
                 openList.append(neighbor)
+                neighbor.checked = True
             elif tentative_g >= neighbor.g:
                 continue #better path not found
             
@@ -88,6 +90,8 @@ def print_grid(start=None, destination=None):
             text = "[bold][white]███"
             if grid[x][y].isObstacle:
                 text = "[bold][black]███"
+            if grid[x][y].checked:
+                text = "[grey]███"
             if grid[x][y].isPath:
                 text = "[bold][cyan]███"
             if grid[x][y] == start:
