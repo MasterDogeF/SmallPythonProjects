@@ -1,9 +1,7 @@
 import math
 import random
 from rich.console import Console
-from enum import Enum
 
-WIDTH = 300
 grid_size = 32
 
 class Node():

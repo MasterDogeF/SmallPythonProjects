@@ -15,7 +15,7 @@ mpDraw = mp.solutions.drawing_utils
 
 ball_pos = [wCam/2, hCam/2]
 ball_radius = 30
-gravity = 0.5
+gravity = 0.55
 ball_vel = [5,0]
 fingerVelocities = [None,None]*4
 fingerOldPositions = [None,None]*4
@@ -73,8 +73,8 @@ def ball_collision(ball_pos, ball_vel, radius, p1, p2, handID):
 
     # Reflect velocity across normal
     dot = vx * nx + vy * ny
-    rvx = vx - 2 * dot * nx * 1.1
-    rvy = vy - 2 * dot * ny * 1.1
+    rvx = vx - 2 * dot * nx * 1.03
+    rvy = vy - 2 * dot * ny * 1.03
 
     # Push the ball out to the surface so it doesn't get stuck
     bx = cx + nx * radius 

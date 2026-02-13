@@ -32,7 +32,7 @@ def screen(point): #convert coordinate system from where 0 is centre to where 0 
     x = point[0]
     y = point[1]
     # for x: [-1,1] -> [0,2] -> [0,1] -> [0,width]
-    # for y: [-1,1] -> [0,2] -> [0,1] -> [1,0] -> [height,0]
+    # for y: [-1,1] -> [0,2] -> [0,1] -> [1,0] -> [height,0]S
     return ((x+1)/2*width, (1-(y+1)/2)*height) 
 
 def project(point):
