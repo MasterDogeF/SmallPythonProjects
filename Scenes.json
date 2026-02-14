@@ -1,11 +1,54 @@
 {
-    "sleep": {
-        "text": ["test test test %^&*"],
-        "speed": 2
+    "intro": {
+        "bg": "Alley",
+        "text": [
+            [
+                "",
+                "As I walked down the narrow backalley,\nsuddenly, I felt a presence behind me"
+            ],
+            [
+                "Madarame",
+                "Yooooo!"
+            ],
+            [
+                "Towa",
+                "Hey~"
+            ],
+            [
+                "char+",
+                [
+                    "madarame",
+                    "centre"
+                ]
+            ],
+            [
+                "Madarame",
+                "I lowkenuinely just fucking shit myself bro"
+            ],
+            [
+                "char-",
+                [
+                    "madarame",
+                    "centre"
+                ]
+            ],
+            [
+                "Towa",
+                "uh"
+            ]
+        ],
+        "speed": 50,
+        "next": "intro"
     },
-    "dad": {
-        "text": ["You: hey dad"],
-        "speed": 1
+    "day": {
+        "bg": "sanpedro",
+        "text": [
+            [
+                "",
+                "nice day today"
+            ]
+        ],
+        "speed": 1,
+        "next": "day"
     }
 }
-
