@@ -53,7 +53,6 @@ while running:
     
     dt = timer.tick(60)
     ms_per_char = 50 / speed
-    print(dt)
 
     #bg
     img = pygame.image.load(bg+".png").convert()
@@ -61,6 +60,7 @@ while running:
     display.blit(img, (0,0))
 
     if text[0] == "char+": 
+        print(text[1])
         charbodys.append(text[1])
         textIndex += 1
         count = 0
@@ -84,6 +84,9 @@ while running:
         elif char["fading"].lower() == "out":
             if char["alpha"] <= 0:
                 char["fading"] == "none"
+                char["alpha"] = 0.0
+                char["fading"] = "in"
+                #print(char)
                 charbodys.remove(char)
             else:
                 char["alpha"] -= dt / 1.25
