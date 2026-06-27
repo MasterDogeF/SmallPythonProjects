@@ -33,7 +33,7 @@ def create_grid():
         for y in range(grid_size):
             column.append(Node((x,y)))
         grid.append(column)
-
+        
 def algorithm(start, destination):
     openList = [start] #nodes that are discovered but may still be able to find a cheaper path to them,
     closedList = [] #final nodes
